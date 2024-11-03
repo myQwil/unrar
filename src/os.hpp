@@ -147,7 +147,7 @@
   #if defined(__i386__) || defined(__x86_64__)
     #include <x86intrin.h>
     
-    #define USE_SSE
+    // #define USE_SSE
     #define SSE_ALIGNMENT 16
   #endif
 #endif
