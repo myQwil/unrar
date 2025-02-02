@@ -1,0 +1,15 @@
+.{
+	.name = "unrar",
+	.version = "7.1.3",
+	.minimum_zig_version = "0.12.0",
+	.paths = .{
+		"examples",
+		"src",
+		"acknow.txt",
+		"build.zig",
+		"build.zig.zon",
+		"license.txt",
+		"readme.txt",
+		"unrar.zig",
+	},
+}
