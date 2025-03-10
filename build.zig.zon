@@ -1,0 +1,14 @@
+.{
+	.name = .unrar,
+	.version = "7.1.5",
+	.fingerprint = 0xb971ee5a9960dacc,
+	.minimum_zig_version = "0.14.0",
+	.paths = .{
+		"src",
+		"build.zig",
+		"build.zig.zon",
+		"license.txt",
+		"readme.txt",
+		"unrar.zig",
+	},
+}
