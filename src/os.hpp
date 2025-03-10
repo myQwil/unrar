@@ -38,9 +38,11 @@
 #endif
 
 #define WINVER _WIN32_WINNT_WINXP
+#undef _WIN32_WINNT
 #define _WIN32_WINNT _WIN32_WINNT_WINXP
 
 #if !defined(ZIPSFX)
+#undef RAR_SMP
 #define RAR_SMP
 #endif
 
@@ -50,7 +52,7 @@
 #include <prsht.h>
 #include <shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
-#include <PowrProf.h>
+#include <powrprof.h>
 #pragma comment(lib, "PowrProf.lib")
 #include <shellapi.h>
 #include <shlobj.h>
@@ -58,13 +60,13 @@
 #include <wincrypt.h>
 #include <wchar.h>
 #include <wctype.h>
-#include <Sddl.h>
+#include <sddl.h>
 #include <ntsecapi.h>
 
 
 // For WMI requests.
 #include <comdef.h>
-#include <Wbemidl.h>
+#include <wbemidl.h>
 #pragma comment(lib, "wbemuuid.lib")
 
 
@@ -76,7 +78,7 @@
 
 // Use SSE only for x86/x64, not ARM Windows.
 #if defined(_M_IX86) || defined(_M_X64)
-  #define USE_SSE
+  // #define USE_SSE
   #define SSE_ALIGNMENT 16
 #endif
 
@@ -151,7 +153,7 @@
   #if defined(__i386__) || defined(__x86_64__)
     #include <x86intrin.h>
     
-    #define USE_SSE
+    // #define USE_SSE
     #define SSE_ALIGNMENT 16
   #endif
 #endif
@@ -227,6 +229,7 @@
 
 #endif // _UNIX
 
+  #include "rartypes.hpp"
   typedef const wchar* MSGID;
 
 #ifndef SSE_ALIGNMENT // No SSE use and no special data alignment is required.
