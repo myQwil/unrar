@@ -25,8 +25,38 @@ DWORD WinNT()
 
 // Replace it with documented Windows 11 check when available.
 #include <comdef.h>
-#include <Wbemidl.h>
+#include <wbemidl.h>
 #pragma comment(lib, "wbemuuid.lib")
+
+BSTR _com_util::ConvertStringToBSTR(const char* pSrc)
+{
+  if(!pSrc)
+    return NULL;
+
+  DWORD cwch;
+  BSTR wsOut(NULL);
+
+  if(cwch = ::MultiByteToWideChar(CP_ACP, 0, pSrc, -1, NULL, 0))
+  {
+    //get size minus NULL terminator
+    cwch--;
+    wsOut = ::SysAllocStringLen(NULL, cwch);
+
+    if(wsOut)
+    {
+      if(!::MultiByteToWideChar(CP_ACP, 0, pSrc, -1, wsOut, cwch))
+      {
+        if(ERROR_INSUFFICIENT_BUFFER == ::GetLastError())
+          return wsOut;
+        ::SysFreeString(wsOut);//must clean up
+
+        wsOut = NULL;
+      }
+    }
+  }
+
+  return wsOut;
+};
 
 static bool WMI_IsWindows10()
 {
