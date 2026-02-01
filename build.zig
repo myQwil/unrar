@@ -57,7 +57,7 @@ pub fn build(b: *std.Build) !void {
 			.linkage = opt.linkage,
 			.root_module = mod,
 		});
-		lib.installHeadersDirectory(b.path("."), "", .{
+		lib.installHeadersDirectory(upstream.path("."), "", .{
 			.include_extensions = &.{ "dll.hpp" },
 		});
 		b.installArtifact(lib);
