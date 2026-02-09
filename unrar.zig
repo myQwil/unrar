@@ -1,5 +1,3 @@
-const std = @import("std");
-
 pub const c_wchar = @cImport({
 	@cInclude("wchar.h");
 }).wchar_t;
@@ -114,8 +112,8 @@ pub const HeaderFlags = packed struct(c_uint) {
 };
 
 pub const Header = extern struct {
-	arc_name: [259:0]u8 = std.mem.zeroes([259:0]u8),
-	file_name: [259:0]u8 = std.mem.zeroes([259:0]u8),
+	arc_name: [259:0]u8 = @splat(0),
+	file_name: [259:0]u8 = @splat(0),
 	flags: Flags = .{},
 	pack_size: c_uint = 0,
 	unp_size: c_uint = 0,
@@ -143,10 +141,10 @@ pub const Header = extern struct {
 };
 
 pub const HeaderEx = extern struct {
-	arc_name: [1023:0]u8 = std.mem.zeroes([1023:0]u8),
-	arc_name_w: [1023:0]c_wchar = std.mem.zeroes([1023:0]c_wchar),
-	file_name: [1023:0]u8 = std.mem.zeroes([1023:0]u8),
-	file_name_w: [1023:0]c_wchar = std.mem.zeroes([1023:0]c_wchar),
+	arc_name: [1023:0]u8 = @splat(0),
+	arc_name_w: [1023:0]c_wchar = @splat(0),
+	file_name: [1023:0]u8 = @splat(0),
+	file_name_w: [1023:0]c_wchar = @splat(0),
 	flags: Flags = .{},
 	pack_size: c_uint = 0,
 	pack_size_high: c_uint = 0,
@@ -164,7 +162,7 @@ pub const HeaderEx = extern struct {
 	cmt_state: c_uint = 0,
 	dict_size: c_uint = 0,
 	hash_type: HashType = .none,
-	hash: [32]u8 = std.mem.zeroes([32]u8),
+	hash: [32]u8 = @splat(0),
 	redir_type: c_uint = 0,
 	redir_name: ?[*:0]c_wchar = null,
 	redir_name_size: c_uint = 0,
@@ -179,7 +177,7 @@ pub const HeaderEx = extern struct {
 	arc_name_ex_size: c_uint = 0,
 	file_name_ex: ?[*:0]c_wchar = null,
 	file_name_ex_size: c_uint = 0,
-	reserved: [982]c_uint = std.mem.zeroes([982]c_uint),
+	reserved: [982]c_uint = @splat(0),
 
 	pub const Flags = HeaderFlags;
 
@@ -219,7 +217,7 @@ pub const OpenDataEx = extern struct {
 	user_data: usize = 0,
 	op_flags: OpFlags = .{},
 	cmt_buf_w: ?[*:0]c_wchar = null,
-	reserved: [25]c_uint = std.mem.zeroes([25]c_uint),
+	reserved: [25]c_uint = @splat(0),
 
 	pub const Flags = packed struct(c_uint) {
 		volume: bool = false,
