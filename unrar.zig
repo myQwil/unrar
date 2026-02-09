@@ -110,7 +110,7 @@ pub const HeaderFlags = packed struct(c_uint) {
 	_unused1: u1 = 0,
 	solid: bool = false,
 	directory: bool = false,
-	_unused2:std.meta.Int(.unsigned, @bitSizeOf(c_uint) - 6) = 0,
+	_unused2: @Int(.unsigned, @bitSizeOf(c_uint) - 6) = 0,
 };
 
 pub const Header = extern struct {
@@ -231,12 +231,12 @@ pub const OpenDataEx = extern struct {
 		recovery: bool = false,
 		enc_headers: bool = false,
 		first_volume: bool = false,
-		_unused: std.meta.Int(.unsigned, @bitSizeOf(c_uint) - 9) = 0,
+		_unused: @Int(.unsigned, @bitSizeOf(c_uint) - 9) = 0,
 	};
 
 	pub const OpFlags = packed struct(c_uint) {
 		keep_broken: bool = false,
-		_unused: std.meta.Int(.unsigned, @bitSizeOf(c_uint) - 1) = 0,
+		_unused: @Int(.unsigned, @bitSizeOf(c_uint) - 1) = 0,
 	};
 
 	pub const open = Archive.openEx;
