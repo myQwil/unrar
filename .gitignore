@@ -1,6 +1,7 @@
 # Zig folders
-.zig-cache/
 zig-out/
+zig-pkg/
+.zig-cache/
 
 # VSCode folder
 .vscode/
