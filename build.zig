@@ -29,7 +29,7 @@ pub fn build(b: *std.Build) !void {
 		});
 
 		const mem = b.allocator;
-		var files: std.ArrayList([]const u8) = try .initCapacity(mem, 0);
+		var files: std.ArrayList([]const u8) = .empty;
 		defer files.deinit(mem);
 
 		try files.appendSlice(mem, &src.main);
