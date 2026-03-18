@@ -5,8 +5,8 @@
 	.minimum_zig_version = "0.16.0-dev.2368+380ea6fb5",
 	.dependencies = .{
 		.unrar = .{
-			.url = "git+https://github.com/myQwil/unrar-cpp#3007f14a1541012d23a6c34105b4ac58656e7614",
-			.hash = "N-V-__8AAPLlDgCjoNjdzrHJsLZAKdTySh5dbTSIHriab6ay",
+			.url = "git+https://github.com/myQwil/unrar-cpp#02aedcfaf69b74c32b023f9df6210451071e2eb2",
+			.hash = "N-V-__8AAPblDgBzXc6OaOzLXbOanzB7AG4m-gAqSGtg3fwD",
 		},
 	},
 	.paths = .{
