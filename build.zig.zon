@@ -1,6 +1,6 @@
 .{
 	.name = .unrar,
-	.version = "7.2.3",
+	.version = "7.2.4",
 	.fingerprint = 0xb971ee5a9960dacc,
 	.minimum_zig_version = "0.16.0-dev.2368+380ea6fb5",
 	.dependencies = .{
