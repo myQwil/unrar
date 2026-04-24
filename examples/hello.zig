@@ -2,9 +2,9 @@ const std = @import("std");
 const rar = @import("unrar");
 
 pub fn main(init: std.process.Init) !void {
-	const arena: std.mem.Allocator = init.arena.allocator();
-	const args = try init.minimal.args.toSlice(arena);
-	const arg = if (args.len > 1) args[1] else return error.NoArgSpecified;
+	var args = init.minimal.args.iterate();
+	_ = args.skip();
+	const arg = args.next() orelse return error.NoArgSpecified;
 
 	std.debug.print("listing contents of: {s}\n", .{ arg });
 
