@@ -1,32 +1,33 @@
-pub const c_wchar = @cImport({
-	@cInclude("wchar.h");
-}).wchar_t;
+const c = @import("cdef");
+const c_wchar = c.wchar_t;
 
-pub const Callback = ?*const fn (CallbackMsg, usize, usize, usize) callconv(.c) c_uint;
-pub const ChangeVolProc = ?*const fn (?[*:0]u8, VolMode) callconv(.c) c_uint;
-pub const ProcessDataProc = ?*const fn (?[*:0]u8, c_int) callconv(.c) c_uint;
-pub const dll_version = 9;
+pub const Callback = fn (CallbackMsg, usize, usize, usize) callconv(.c) ErrorCode;
+pub const ChangeVolProc = fn (?[*:0]u8, VolMode) callconv(.c) c_uint;
+pub const ProcessDataProc = fn (?[*:0]u8, c_int) callconv(.c) c_uint;
 
-const success = 0;
-const end_of_archive = 10;
-const err_offset = 11;
+pub const dll_version = c.RAR_DLL_VERSION;
+
+const success = c.ERAR_SUCCESS;
+const end_of_archive = c.ERAR_END_ARCHIVE;
+const err_offset = c.ERAR_NO_MEMORY;
 
 pub const ErrorCode = enum(c_uint) {
-	no_memory = 11,
-	bad_data = 12,
-	bad_archive = 13,
-	unknown_format = 14,
-	eopen = 15,
-	ecreate = 16,
-	eclose = 17,
-	eread = 18,
-	ewrite = 19,
-	small_buf = 20,
-	unknown = 21,
-	missing_password = 22,
-	ereference = 23,
-	bad_password = 24,
-	large_dict = 25,
+	success = c.ERAR_SUCCESS,
+	no_memory = c.ERAR_NO_MEMORY,
+	bad_data = c.ERAR_BAD_DATA,
+	bad_archive = c.ERAR_BAD_ARCHIVE,
+	unknown_format = c.ERAR_UNKNOWN_FORMAT,
+	eopen = c.ERAR_EOPEN,
+	ecreate = c.ERAR_ECREATE,
+	eclose = c.ERAR_ECLOSE,
+	eread = c.ERAR_EREAD,
+	ewrite = c.ERAR_EWRITE,
+	small_buf = c.ERAR_SMALL_BUF,
+	unknown = c.ERAR_UNKNOWN,
+	missing_password = c.ERAR_MISSING_PASSWORD,
+	ereference = c.ERAR_EREFERENCE,
+	bad_password = c.ERAR_BAD_PASSWORD,
+	large_dict = c.ERAR_LARGE_DICT,
 };
 
 pub const Error = error {
@@ -34,39 +35,39 @@ pub const Error = error {
 	BadData,
 	BadArchive,
 	UnknownFormat,
-	Open,
-	Create,
-	Close,
-	Read,
-	Write,
+	OpenFail,
+	CreateFail,
+	CloseFail,
+	ReadFail,
+	WriteFail,
 	SmallBuffer,
 	Unknown,
 	MissingPassword,
-	Reference,
+	BadReference,
 	BadPassword,
 	LargeDictionary,
 };
 
 const error_list = [_]Error{
-	Error.OutOfMemory,
-	Error.BadData,
-	Error.BadArchive,
-	Error.UnknownFormat,
-	Error.Open,
-	Error.Create,
-	Error.Close,
-	Error.Read,
-	Error.Write,
-	Error.SmallBuffer,
-	Error.Unknown,
-	Error.MissingPassword,
-	Error.Reference,
-	Error.BadPassword,
-	Error.LargeDictionary,
+	error.OutOfMemory,
+	error.BadData,
+	error.BadArchive,
+	error.UnknownFormat,
+	error.OpenFail,
+	error.CreateFail,
+	error.CloseFail,
+	error.ReadFail,
+	error.WriteFail,
+	error.SmallBuffer,
+	error.Unknown,
+	error.MissingPassword,
+	error.BadReference,
+	error.BadPassword,
+	error.LargeDictionary,
 };
 
-fn toError(i: c_uint) Error {
-	return error_list[i - err_offset];
+fn toError(i: c_int) Error {
+	return error_list[@as(usize, @intCast(i)) - err_offset];
 }
 
 pub const OpenMode = enum(c_uint) {
@@ -75,7 +76,7 @@ pub const OpenMode = enum(c_uint) {
 	list_incsplit = 2,
 };
 
-pub const Operation = enum(c_uint) {
+pub const Operation = enum(c_int) {
 	skip = 0,
 	read = 1,
 	extract = 2,
@@ -114,7 +115,7 @@ pub const HeaderFlags = packed struct(c_uint) {
 pub const Header = extern struct {
 	arc_name: [259:0]u8 = @splat(0),
 	file_name: [259:0]u8 = @splat(0),
-	flags: Flags = .{},
+	flags: HeaderFlags = .{},
 	pack_size: c_uint = 0,
 	unp_size: c_uint = 0,
 	host_os: c_uint = 0,
@@ -128,16 +129,13 @@ pub const Header = extern struct {
 	cmt_size: c_uint = 0,
 	cmt_state: c_uint = 0,
 
-	pub const Flags = HeaderFlags;
-
 	pub fn read(self: *Header, arc: *Archive) Error!bool {
-		return switch (RARReadHeader(arc, self)) {
+		return switch (c.RARReadHeader(arc, @ptrCast(self))) {
 			success => true,
 			end_of_archive => false,
 			else => |res| toError(res),
 		};
 	}
-	extern fn RARReadHeader(*Archive, *Header) c_uint;
 };
 
 pub const HeaderEx = extern struct {
@@ -145,7 +143,7 @@ pub const HeaderEx = extern struct {
 	arc_name_w: [1023:0]c_wchar = @splat(0),
 	file_name: [1023:0]u8 = @splat(0),
 	file_name_w: [1023:0]c_wchar = @splat(0),
-	flags: Flags = .{},
+	flags: HeaderFlags = .{},
 	pack_size: c_uint = 0,
 	pack_size_high: c_uint = 0,
 	unp_size: c_uint = 0,
@@ -179,16 +177,13 @@ pub const HeaderEx = extern struct {
 	file_name_ex_size: c_uint = 0,
 	reserved: [982]c_uint = @splat(0),
 
-	pub const Flags = HeaderFlags;
-
 	pub fn read(self: *HeaderEx, arc: *Archive) Error!bool {
-		return switch (RARReadHeaderEx(arc, self)) {
+		return switch (c.RARReadHeaderEx(arc, self)) {
 			success => true,
 			end_of_archive => false,
 			else => |res| toError(res),
 		};
 	}
-	extern fn RARReadHeaderEx(*Archive, *HeaderEx) c_uint;
 };
 
 pub const OpenData = extern struct {
@@ -213,7 +208,7 @@ pub const OpenDataEx = extern struct {
 	cmt_size: c_uint = 0,
 	cmt_state: c_uint = 0,
 	flags: Flags = .{},
-	callback: Callback = null,
+	callback: ?*const Callback = null,
 	user_data: usize = 0,
 	op_flags: OpFlags = .{},
 	cmt_buf_w: ?[*:0]c_wchar = null,
@@ -242,21 +237,22 @@ pub const OpenDataEx = extern struct {
 
 pub const Archive = opaque {
 	pub fn open(data: *OpenData) Error!*Archive {
-		return RAROpenArchive(data) orelse toError(data.open_result);
+		return if (c.RAROpenArchive(@ptrCast(data))) |arc|
+			@ptrCast(arc)
+		else toError(@intCast(data.open_result));
 	}
-	extern fn RAROpenArchive(*OpenData) ?*Archive;
 
 	pub fn openEx(data: *OpenDataEx) Error!*Archive {
-		return RAROpenArchiveEx(data) orelse toError(data.open_result);
+		return if (c.RAROpenArchiveEx(@ptrCast(data))) |arc|
+			@ptrCast(arc)
+		else toError(@intCast(data.open_result));
 	}
-	extern fn RAROpenArchiveEx(*OpenDataEx) ?*Archive;
 
 	pub fn close(self: *Archive) Error!void {
-		const result = RARCloseArchive(self);
+		const result = c.RARCloseArchive(self);
 		if (result != success)
 			return toError(result);
 	}
-	extern fn RARCloseArchive(*Archive) c_uint;
 
 	pub fn processFile(
 		self: *Archive,
@@ -264,11 +260,10 @@ pub const Archive = opaque {
 		dest: ?[*:0]u8,
 		name: ?[*:0]u8,
 	) Error!void {
-		const result = RARProcessFile(self, op, dest, name);
+		const result = c.RARProcessFile(self, @intFromEnum(op), dest, name);
 		if (result != success)
 			return toError(result);
 	}
-	extern fn RARProcessFile(*Archive, Operation, ?[*:0]u8, ?[*:0]u8) c_uint;
 
 	pub fn processFileW(
 		self: *Archive,
@@ -276,24 +271,28 @@ pub const Archive = opaque {
 		dest: ?[*:0]c_wchar,
 		name: ?[*:0]c_wchar,
 	) Error!void {
-		const result = RARProcessFileW(self, op, dest, name);
+		const result = c.RARProcessFileW(self, @intFromEnum(op), dest, name);
 		if (result != success)
 			return toError(result);
 	}
-	extern fn RARProcessFileW(*Archive, Operation, ?[*:0]c_wchar, ?[*:0]c_wchar) c_uint;
 
-	pub const setCallback = RARSetCallback;
-	extern fn RARSetCallback(*Archive, cb: Callback, data: usize) void;
+	pub fn setCallback(self: *Archive, cb: ?*const Callback, data: usize) void {
+		c.RARSetCallback(self, @ptrCast(cb), data);
+	}
 
-	pub const setChangeVolProc = RARSetChangeVolProc;
-	extern fn RARSetChangeVolProc(*Archive, proc: ChangeVolProc) void;
+	pub fn setChangeVolProc(self: *Archive, proc: ?*const ChangeVolProc) void {
+		c.RARSetChangeVolProc(self, @ptrCast(proc));
+	}
 
-	pub const setProcessDataProc = RARSetProcessDataProc;
-	extern fn RARSetProcessDataProc(*Archive, proc: ProcessDataProc) void;
+	pub fn setProcessDataProc(self: *Archive, proc: ?*const ProcessDataProc) void {
+		c.RARSetProcessDataProc(self, @ptrCast(proc));
+	}
 
-	pub const setPassword = RARSetPassword;
-	extern fn RARSetPassword(*Archive, password: [*:0]u8) void;
+	pub fn setPassword(self: *Archive, password: [*:0]u8) void {
+		c.RARSetPassword(self, password);
+	}
 };
 
-pub const getDllVersion = RARGetDllVersion;
-extern fn RARGetDllVersion() c_int;
+pub fn getDllVersion() c_int {
+	return c.RARGetDllVersion();
+}

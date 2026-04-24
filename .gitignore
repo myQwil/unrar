@@ -1,7 +1,10 @@
-# Zig folders
+# Zig
+.zig-cache/
 zig-out/
 zig-pkg/
-.zig-cache/
 
-# VSCode folder
+# Upstream
+upstream/
+
+# IDEs
 .vscode/

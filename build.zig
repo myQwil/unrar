@@ -19,6 +19,8 @@ pub fn build(b: *std.Build) !void {
 	const optimize = b.standardOptimizeOption(.{});
 	const opt: Options = .init(b);
 
+	const upstream = b.dependency("unrar", .{});
+
 	//---------------------------------------------------------------------------
 	// Library
 	const lib = blk: {
@@ -40,7 +42,6 @@ pub fn build(b: *std.Build) !void {
 			mod.linkSystemLibrary("ole32", .{});
 		}
 
-		const upstream = b.dependency("unrar", .{});
 		mod.addCSourceFiles(.{
 			.root = upstream.path("."),
 			.files = files.items,
@@ -66,10 +67,25 @@ pub fn build(b: *std.Build) !void {
 
 	//---------------------------------------------------------------------------
 	// Zig module
+	const c_mod = blk: {
+		const c = b.addTranslateC(.{
+			.root_source_file = b.path("translate.h"),
+			.target = target,
+			.optimize = optimize,
+		});
+		c.addIncludePath(upstream.path("."));
+		c.defineCMacro("CALLBACK", "");
+		c.defineCMacro("PASCAL", "");
+		c.defineCMacro("HANDLE", "void *");
+		c.defineCMacro("LPARAM", "uintptr_t");
+		c.defineCMacro("UINT", "unsigned int");
+		break :blk c.createModule();
+	};
 	const zig_mod = b.addModule("unrar", .{
 		.root_source_file = b.path("unrar.zig"),
 		.target = target,
 		.optimize = optimize,
+		.imports = &.{ .{ .name = "cdef", .module = c_mod } },
 	});
 	zig_mod.linkLibrary(lib);
 
