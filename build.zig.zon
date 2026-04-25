@@ -2,7 +2,7 @@
 	.name = .unrar,
 	.version = "7.2.4",
 	.fingerprint = 0xb971ee5a9960dacc,
-	.minimum_zig_version = "0.16.0-dev.2368+380ea6fb5",
+	.minimum_zig_version = "0.16.0",
 	.dependencies = .{
 		.unrar = .{
 			.url = "git+https://github.com/myQwil/unrar-cpp#02aedcfaf69b74c32b023f9df6210451071e2eb2",
@@ -10,10 +10,12 @@
 		},
 	},
 	.paths = .{
-		"LICENSE",
-		"README.md",
+		"examples",
 		"build.zig",
 		"build.zig.zon",
+		"LICENSE",
+		"README.md",
+		"translate.h",
 		"unrar.zig",
 	},
 }
