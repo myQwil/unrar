@@ -1,12 +1,12 @@
 .{
 	.name = .unrar,
-	.version = "7.2.4",
+	.version = "7.2.5",
 	.fingerprint = 0xb971ee5a9960dacc,
 	.minimum_zig_version = "0.16.0",
 	.dependencies = .{
 		.unrar = .{
-			.url = "git+https://github.com/myQwil/unrar-cpp#02aedcfaf69b74c32b023f9df6210451071e2eb2",
-			.hash = "N-V-__8AAPblDgBzXc6OaOzLXbOanzB7AG4m-gAqSGtg3fwD",
+			.url = "git+https://github.com/myQwil/unrar-cpp#5f62e1aa938afa7e1e2e71409ba52be23ec10907",
+			.hash = "N-V-__8AADLpDgAucXQ_NVybmCJJj67RMcdUT-Phzfm0IaI8",
 		},
 	},
 	.paths = .{
