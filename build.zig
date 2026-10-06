@@ -109,9 +109,7 @@ pub fn build(b: *std.Build) !void {
 	run.step.dependOn(&install.step);
 	const step_run = b.step("run_hello", "Build and run the zig example");
 	step_run.dependOn(&run.step);
-	if (b.args) |args| {
-		run.addArgs(args);
-	}
+	run.addPassthruArgs();
 }
 
 const src = struct {
