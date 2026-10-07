@@ -260,7 +260,7 @@ pub const Archive = opaque {
 		dest: ?[*:0]u8,
 		name: ?[*:0]u8,
 	) Error!void {
-		const result = c.RARProcessFile(self, @intFromEnum(op), dest, name);
+		const result = c.RARProcessFile(self, @backingInt(op), dest, name);
 		if (result != success)
 			return toError(result);
 	}
@@ -271,7 +271,7 @@ pub const Archive = opaque {
 		dest: ?[*:0]c_wchar,
 		name: ?[*:0]c_wchar,
 	) Error!void {
-		const result = c.RARProcessFileW(self, @intFromEnum(op), dest, name);
+		const result = c.RARProcessFileW(self, @backingInt(op), dest, name);
 		if (result != success)
 			return toError(result);
 	}
