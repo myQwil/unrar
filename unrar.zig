@@ -1,4 +1,4 @@
-const c = @import("cdef");
+const c = @import("c");
 const c_wchar = c.wchar_t;
 
 pub const Callback = fn (CallbackMsg, usize, usize, usize) callconv(.c) ErrorCode;

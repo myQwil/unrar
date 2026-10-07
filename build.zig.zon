@@ -8,6 +8,10 @@
 			.url = "git+https://github.com/myQwil/unrar-cpp#5f62e1aa938afa7e1e2e71409ba52be23ec10907",
 			.hash = "N-V-__8AADLpDgAucXQ_NVybmCJJj67RMcdUT-Phzfm0IaI8",
 		},
+		.translate_c = .{
+			.url = "git+https://codeberg.org/ziglang/translate-c#875969d3493e245e01bf5d7860f792d8f3eb9ef5",
+			.hash = "translate_c-0.0.0-Q_BUWoFOBwAhz77Zd15HCVuhTKzdUKc94kezmCeJ7IC_",
+		},
 	},
 	.paths = .{
 		"examples",
