@@ -1,15 +1,13 @@
 const c = @import("c");
 const c_wchar = c.wchar_t;
+pub const dll_version = c.RAR_DLL_VERSION;
+const success = c.ERAR_SUCCESS;
+const end_of_archive = c.ERAR_END_ARCHIVE;
+const err_offset = c.ERAR_NO_MEMORY;
 
 pub const Callback = fn (CallbackMsg, usize, usize, usize) callconv(.c) ErrorCode;
 pub const ChangeVolProc = fn (?[*:0]u8, VolMode) callconv(.c) c_uint;
 pub const ProcessDataProc = fn (?[*:0]u8, c_int) callconv(.c) c_uint;
-
-pub const dll_version = c.RAR_DLL_VERSION;
-
-const success = c.ERAR_SUCCESS;
-const end_of_archive = c.ERAR_END_ARCHIVE;
-const err_offset = c.ERAR_NO_MEMORY;
 
 pub const ErrorCode = enum(c_uint) {
 	success = c.ERAR_SUCCESS,
@@ -30,7 +28,7 @@ pub const ErrorCode = enum(c_uint) {
 	large_dict = c.ERAR_LARGE_DICT,
 };
 
-pub const Error = error {
+pub const Error = error{
 	OutOfMemory,
 	BadData,
 	BadArchive,
@@ -239,13 +237,15 @@ pub const Archive = opaque {
 	pub fn open(data: *OpenData) Error!*Archive {
 		return if (c.RAROpenArchive(@ptrCast(data))) |arc|
 			@ptrCast(arc)
-		else toError(@intCast(data.open_result));
+		else
+			toError(@intCast(data.open_result));
 	}
 
 	pub fn openEx(data: *OpenDataEx) Error!*Archive {
 		return if (c.RAROpenArchiveEx(@ptrCast(data))) |arc|
 			@ptrCast(arc)
-		else toError(@intCast(data.open_result));
+		else
+			toError(@intCast(data.open_result));
 	}
 
 	pub fn close(self: *Archive) Error!void {

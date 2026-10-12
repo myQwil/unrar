@@ -1,6 +1,7 @@
 const std = @import("std");
-const Translator = @import("translate_c").Translator;
 const LinkMode = std.builtin.LinkMode;
+
+const Translator = @import("translate_c").Translator;
 
 const Options = struct {
 	linkage: LinkMode = .static,
@@ -79,12 +80,12 @@ pub fn build(b: *std.Build) !void {
 	c.defineCMacro("HANDLE", "void *");
 	c.defineCMacro("LPARAM", "uintptr_t");
 	c.defineCMacro("UINT", "unsigned int");
-	
+
 	const zig_mod = b.addModule("unrar", .{
 		.root_source_file = b.path("unrar.zig"),
 		.target = target,
 		.optimize = optimize,
-		.imports = &.{ .{ .name = "c", .module = c.mod } },
+		.imports = &.{.{ .name = "c", .module = c.mod }},
 	});
 	zig_mod.linkLibrary(lib);
 
@@ -96,7 +97,7 @@ pub fn build(b: *std.Build) !void {
 			.root_source_file = b.path("examples/hello.zig"),
 			.target = target,
 			.optimize = optimize,
-			.imports = &.{ .{ .name = "unrar", .module = zig_mod } },
+			.imports = &.{.{ .name = "unrar", .module = zig_mod }},
 		}),
 	});
 

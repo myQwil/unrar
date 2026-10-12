@@ -1,4 +1,5 @@
 const std = @import("std");
+
 const rar = @import("unrar");
 
 pub fn main(init: std.process.Init) !void {
